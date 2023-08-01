@@ -1,6 +1,7 @@
 import { PineconeClient } from '@pinecone-database/pinecone';
+import config from './../config/pinecone_config' 
 
-if (!process.env.PINECONE_ENVIRONMENT || !process.env.PINECONE_API_KEY) {
+if (!config.pineconeEnviroment || !config.pineconeKey) {
   throw new Error('Pinecone environment or api key faltan');
 }
 
@@ -9,10 +10,9 @@ async function initPinecone() {
     const pinecone = new PineconeClient();
 
     await pinecone.init({
-      environment: process.env.PINECONE_ENVIRONMENT ?? '', //this is in the dashboard
-      apiKey: process.env.PINECONE_API_KEY ?? '',
+      environment: config.pineconeEnviroment ?? '', //this is in the dashboard
+      apiKey: config.pineconeKey ?? '',
     });
-
     return pinecone;
   } catch (error) {
     console.log('error', error);
