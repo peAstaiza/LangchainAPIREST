@@ -1,12 +1,13 @@
 import express from 'express';
-//routes
-import chatRoutes from './routes/chat.routes'
+import bodyParser from 'body-parser';
+import chatRoutes from './routes/chat.routes';
 const app = express();
-
+// settings
 app.set("port",4000);
-//
+//middlewares
+app.use(bodyParser.json());
+//routes
 app.use('/api/chat',chatRoutes);
-app.use(express.json());
 //
 
 export default app;

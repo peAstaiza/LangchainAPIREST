@@ -6,9 +6,17 @@ import config from './../config/pinecone_config'
 import { OpenAIEmbeddings } from 'langchain/embeddings/openai';
 import { PineconeStore } from 'langchain/vectorstores/pinecone';
 
+//Obtener una respuesta de OpenAI y Pinecone
 const getResponse = async (req:Request, res:Response) => {
     try{
-        const { question, history } = req.body;
+        const body = req.body
+        if(JSON.stringify(body)=='{}') {
+            return res.status(400).json({error:"content-missing"}).end()
+        }
+        const { question, history } = body;
+        if(!question){
+            return res.status(400).json({error:"question-missing"}).end()
+        }
         console.log('Pregunta: ', question);
         const sanitizedQuestion = question.trim().replaceAll('\n', ' ');
         const index = pinecone.Index(config.pineconeIndex);
@@ -27,12 +35,12 @@ const getResponse = async (req:Request, res:Response) => {
             question: sanitizedQuestion,
             chat_history: history || [],
         });
-        console.log('response', response);
-        res.status(200).json(response);
+        console.log('response', response.text);
+        res.status(200).json(response);/**/
     }
     catch(error){
-        res.status(500);
         console.log(error);
+        res.status(500).send('Error').end();
     }
 }
 
